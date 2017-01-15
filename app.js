@@ -25,14 +25,40 @@ const buildFile = async function(dir) {
 	try {
 		let html = await readFile(dir);
 		let tags = html.match(/<script [^>]*>/g);
-		tags.forEach(tag => {
-			if (tag.indexOf(config.dir.controller) === -1 && tag.indexOf(config.dir.util) === -1) {
-				return false;
-			}
-			tag = tag.replace(/t=[0-9]{13}/g, '');
-			let replace = tag.replace('.js', `.js?t=${Date.now()}`);
-			html = html.replace(tag, replace);
-		});
+		let link = html.match(/<link [^>]*>/g);
+		let timeStamp = Date.now();
+		if (tags && tags.length > 0) {
+			tags.forEach(tag => {
+				var tempTag = tag;
+				if (tag.indexOf(config.dir.controller) === -1 && tag.indexOf(config.dir.util) === -1) {
+					return;
+				}
+				if (tag.indexOf('t=') !== -1) {
+					tag = tag.replace(/t=[0-9]{13}/g, '');
+				}
+				if (tag.indexOf('js?"') !== -1 || tag.indexOf("js?'") !== -1) {
+					tag = tag.replace('js?', 'js')
+				}
+				let replace = tag.replace('.js', `.js?t=${timeStamp}`);
+				html = html.replace(tempTag, replace);
+			});
+		}
+		if (link && link.length > 0) {
+			link.forEach(tag => {
+				var tempTag = tag;
+				if (tag.indexOf(config.dir.css) === -1) {
+					return;
+				}
+				if (tag.indexOf('t=') !== -1) {
+					tag = tag.replace(/t=[0-9]{13}/g, '');
+				}
+				if (tag.indexOf('css?"') !== -1 || tag.indexOf("css?'") !== -1) {
+					tag = tag.replace('css?', 'css')
+				}
+				let replace = tag.replace('.css', `.css?t=${timeStamp}`);
+				html = html.replace(tempTag, replace);
+			});
+		}
 		await rewriteFile(dir, html);
 	} catch (err) {
 		console.log(err);

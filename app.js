@@ -9,10 +9,10 @@ const readFile = function(dir) {
 	})
 }
 const rewriteFile = function(dir, data) {
+	let option = {
+		flag: 'w'
+	};
 	return new Promise((success, fail) => {
-		let option = {
-			flag: 'w'
-		};
 		fs.writeFile(dir, data, option, err => {
 			if (err) return fail(err);
 			console.log(`rewrite file ${dir} success`);
@@ -41,7 +41,7 @@ const buildFile = async function(dir) {
 
 const init = async function() {
 	try {
-		let commonDir = config.common ? config.common : '.';
+		let commonDir = config.views ? config.views : '.';
 		config.files.forEach(dir => {
 			dir = `${commonDir}${dir}`
 			buildFile(dir)

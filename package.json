@@ -20,5 +20,9 @@
   "bugs": {
     "url": "https://github.com/mane115/bulid_html_test/issues"
   },
-  "homepage": "https://github.com/mane115/bulid_html_test#readme"
+  "homepage": "https://github.com/mane115/bulid_html_test#readme",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "rd": "^1.0.0"
+  }
 }
